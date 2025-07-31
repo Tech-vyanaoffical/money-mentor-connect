@@ -1,4 +1,4 @@
-import AdvisorCard from "./AdvisorCard";
+import { AdvisorCard } from "./AdvisorCard";
 
 const advisors = [
   {

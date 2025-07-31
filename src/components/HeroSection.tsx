@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Shield, Clock, Star, MessageCircle } from "lucide-react";
 import { ChatModal } from "./ChatModal";
-import { useState } from "react";
+import React, { useState } from "react";
 
 const HeroSection = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);

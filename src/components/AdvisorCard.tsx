@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Clock, Shield, MessageCircle } from "lucide-react";
 import { ChatModal } from "./ChatModal";
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface AdvisorCardProps {
   name: string;
@@ -99,4 +99,4 @@ const AdvisorCard = ({
   );
 };
 
-export default AdvisorCard;
+export { AdvisorCard };
