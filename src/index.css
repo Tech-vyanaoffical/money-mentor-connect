@@ -2,41 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* FinancialTalk Design System - Professional Financial Advisory Platform */
 
 @layer base {
   :root {
+    /* Core Brand Colors */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: 220 26% 14%;
+    
+    /* Professional Navy Palette */
+    --primary: 220 40% 15%;
+    --primary-foreground: 0 0% 98%;
+    --primary-light: 220 35% 25%;
+    --primary-dark: 220 45% 8%;
+    
+    /* Premium Gold Accents */
+    --gold: 43 74% 49%;
+    --gold-light: 43 74% 65%;
+    --gold-dark: 43 74% 35%;
+    
+    /* Sophisticated Grays */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 26% 14%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 8.9% 46.1%;
+    
+    /* Trust & Success Colors */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 98%;
+    --warning: 43 96% 56%;
+    --warning-foreground: 0 0% 98%;
+    
+    /* UI Elements */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: 220 26% 14%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
+    --popover-foreground: 220 26% 14%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 220 40% 15%;
+    --accent: 220 14% 96%;
+    --accent-foreground: 220 26% 14%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    --destructive-foreground: 0 0% 98%;
+    
+    /* Professional Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(220 40% 15%), hsl(220 45% 8%));
+    --gradient-gold: linear-gradient(135deg, hsl(43 74% 49%), hsl(43 74% 35%));
+    --gradient-hero: linear-gradient(135deg, hsl(220 40% 15%) 0%, hsl(220 35% 25%) 50%, hsl(220 45% 8%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(220 14% 98%) 100%);
+    
+    /* Elegant Shadows */
+    --shadow-elegant: 0 10px 30px -10px hsl(220 40% 15% / 0.3);
+    --shadow-card: 0 4px 20px -2px hsl(220 40% 15% / 0.1);
+    --shadow-gold: 0 8px 25px -8px hsl(43 74% 49% / 0.4);
+    
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -94,12 +115,108 @@ All colors MUST be HSL.
   }
 }
 
+  .dark {
+    --background: 220 45% 8%;
+    --foreground: 0 0% 98%;
+    --primary: 43 74% 49%;
+    --primary-foreground: 220 45% 8%;
+    --card: 220 40% 12%;
+    --card-foreground: 0 0% 98%;
+    --border: 220 35% 18%;
+    --gold: 43 74% 49%;
+    --gold-light: 43 74% 65%;
+    --gold-dark: 43 74% 35%;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-light antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  /* Professional Button Variants */
+  .btn-hero {
+    @apply bg-gradient-to-r from-[hsl(var(--gold))] to-[hsl(var(--gold-dark))] 
+           text-white font-medium px-8 py-4 rounded-lg
+           shadow-[var(--shadow-gold)] 
+           hover:shadow-lg hover:scale-105 
+           transition-all duration-300 ease-out;
+  }
+  
+  .btn-primary {
+    @apply bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]
+           hover:bg-[hsl(var(--primary-light))] 
+           shadow-[var(--shadow-elegant)]
+           transition-all duration-200;
+  }
+  
+  /* Professional Cards */
+  .card-elegant {
+    @apply bg-[var(--gradient-card)] border border-[hsl(var(--border))]
+           shadow-[var(--shadow-card)] rounded-xl
+           hover:shadow-[var(--shadow-elegant)] 
+           transition-all duration-300;
+  }
+  
+  /* Gradient Backgrounds */
+  .bg-hero {
+    background: var(--gradient-hero);
+  }
+  
+  .bg-gold-gradient {
+    background: var(--gradient-gold);
+  }
+  
+  /* Professional Animations */
+  .animate-fade-up {
+    @apply animate-[fadeUp_0.6s_ease-out_forwards];
+  }
+  
+  .animate-scale-in {
+    @apply animate-[scaleIn_0.4s_ease-out_forwards];
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px hsl(220 40% 15% / 0.3);
+  }
+  
+  .backdrop-blur-elegant {
+    backdrop-filter: blur(10px);
+    background-color: hsl(0 0% 100% / 0.8);
+  }
+}
+
+/* Professional Keyframes */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
