@@ -19,30 +19,45 @@ interface ChatModalProps {
   onClose: () => void;
   advisorName: string;
   advisorSpecialty: string;
+  isAuthenticated?: boolean;
+  onAuthRequired?: () => void;
 }
 
 export const ChatModal: React.FC<ChatModalProps> = ({ 
   isOpen, 
   onClose, 
   advisorName, 
-  advisorSpecialty 
+  advisorSpecialty,
+  isAuthenticated = false,
+  onAuthRequired
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [timeLeft, setTimeLeft] = useState(120); // 2 minutes in seconds
   const [isFreeTime, setIsFreeTime] = useState(true);
   const [isConnected, setIsConnected] = useState(false);
+  const [chatEnded, setChatEnded] = useState(false);
+  const [hasUsedFreeTime, setHasUsedFreeTime] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isOpen && !isConnected) {
+    if (isOpen && !isConnected && !hasUsedFreeTime) {
+      // Check if user has already used free time (localStorage)
+      const usedFreeTime = localStorage.getItem('hasUsedFreeTime');
+      if (usedFreeTime && !isAuthenticated) {
+        setHasUsedFreeTime(true);
+        setChatEnded(true);
+        addMessage('advisor', 'You have already used your free 2 minutes. Please login and pay to continue chatting with our financial advisors.');
+        return;
+      }
+      
       // Simulate connection delay
       setTimeout(() => {
         setIsConnected(true);
         addMessage('advisor', `Hello! I'm ${advisorName}, your financial advisor specializing in ${advisorSpecialty}. Your first 2 minutes are FREE. How can I help you today?`);
       }, 2000);
     }
-  }, [isOpen, advisorName, advisorSpecialty, isConnected]);
+  }, [isOpen, advisorName, advisorSpecialty, isConnected, hasUsedFreeTime, isAuthenticated]);
 
   useEffect(() => {
     if (isConnected && isFreeTime && timeLeft > 0) {
@@ -50,9 +65,21 @@ export const ChatModal: React.FC<ChatModalProps> = ({
         setTimeLeft(prev => {
           if (prev <= 1) {
             setIsFreeTime(false);
+            setChatEnded(true);
+            localStorage.setItem('hasUsedFreeTime', 'true');
+            
+            if (!isAuthenticated) {
+              addMessage('advisor', 'Your free 2 minutes have ended. Please login and pay ₹2/minute to continue this conversation.');
+              onAuthRequired?.();
+            } else {
+              addMessage('advisor', 'Your free 2 minutes have ended. Continuing at ₹2/minute. Click "Pay & Continue" to proceed.');
+            }
+            
             toast({
               title: "Free Time Ended",
-              description: "Continuing chat at ₹2/minute. Payment will be processed automatically.",
+              description: isAuthenticated 
+                ? "Click 'Pay & Continue' to proceed at ₹2/minute" 
+                : "Please login to continue with paid consultation",
             });
             return 0;
           }
@@ -79,7 +106,7 @@ export const ChatModal: React.FC<ChatModalProps> = ({
   };
 
   const handleSendMessage = () => {
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() || chatEnded) return;
 
     addMessage('user', inputValue);
     setInputValue('');
@@ -104,11 +131,22 @@ export const ChatModal: React.FC<ChatModalProps> = ({
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const handlePayAndContinue = () => {
+    // This will be implemented with Stripe payment
+    toast({
+      title: "Payment Integration",
+      description: "Payment system will be implemented next. This will process ₹2/minute billing.",
+    });
+    setChatEnded(false);
+  };
+
   const handleClose = () => {
     setMessages([]);
     setTimeLeft(120);
     setIsFreeTime(true);
     setIsConnected(false);
+    setChatEnded(false);
+    // Don't reset hasUsedFreeTime on close to prevent loophole
     onClose();
   };
 
@@ -157,6 +195,18 @@ export const ChatModal: React.FC<ChatModalProps> = ({
                   <p className="text-muted-foreground">Connecting to {advisorName}...</p>
                 </div>
               </div>
+            ) : hasUsedFreeTime && !isAuthenticated ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center p-6">
+                  <h3 className="text-lg font-semibold mb-4">Free Session Already Used</h3>
+                  <p className="text-muted-foreground mb-4">
+                    You have already used your free 2-minute session. Please login to continue with paid consultation.
+                  </p>
+                  <Button onClick={onAuthRequired} className="btn-hero">
+                    Login to Continue
+                  </Button>
+                </div>
+              </div>
             ) : (
               <div className="space-y-4">
                 {messages.map((message) => (
@@ -178,6 +228,14 @@ export const ChatModal: React.FC<ChatModalProps> = ({
                     </div>
                   </div>
                 ))}
+                
+                {chatEnded && isAuthenticated && (
+                  <div className="flex justify-center">
+                    <Button onClick={handlePayAndContinue} className="btn-hero">
+                      Pay ₹2/min & Continue Chat
+                    </Button>
+                  </div>
+                )}
                 <div ref={messagesEndRef} />
               </div>
             )}
@@ -188,13 +246,13 @@ export const ChatModal: React.FC<ChatModalProps> = ({
               <Input
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder="Type your message..."
+                placeholder={chatEnded ? "Pay to continue chatting..." : "Type your message..."}
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                disabled={!isConnected}
+                disabled={!isConnected || chatEnded}
               />
               <Button 
                 onClick={handleSendMessage} 
-                disabled={!inputValue.trim() || !isConnected}
+                disabled={!inputValue.trim() || !isConnected || chatEnded}
               >
                 <Send className="w-4 h-4" />
               </Button>
