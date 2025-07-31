@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, Clock, Shield } from "lucide-react";
+import { Star, Clock, Shield, MessageCircle } from "lucide-react";
+import { ChatModal } from "./ChatModal";
+import { useState } from "react";
 
 interface AdvisorCardProps {
   name: string;
@@ -23,6 +25,7 @@ const AdvisorCard = ({
   image,
   tags 
 }: AdvisorCardProps) => {
+  const [isChatOpen, setIsChatOpen] = useState(false);
   return (
     <div className="card-elegant p-6 hover:scale-105 transition-all duration-300">
       <div className="flex items-start space-x-4 mb-4">
@@ -79,10 +82,19 @@ const AdvisorCard = ({
         <Button 
           className={isOnline ? "btn-hero text-sm px-4 py-2" : "btn-primary text-sm px-4 py-2"}
           disabled={!isOnline}
+          onClick={() => isOnline && setIsChatOpen(true)}
         >
+          <MessageCircle className="w-4 h-4 mr-1" />
           {isOnline ? 'Talk Now' : 'Schedule'}
         </Button>
       </div>
+      
+      <ChatModal
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        advisorName={name}
+        advisorSpecialty={specialization}
+      />
     </div>
   );
 };

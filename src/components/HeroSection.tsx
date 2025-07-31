@@ -1,7 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Shield, Clock, Star } from "lucide-react";
+import { Shield, Clock, Star, MessageCircle } from "lucide-react";
+import { ChatModal } from "./ChatModal";
+import { useState } from "react";
 
 const HeroSection = () => {
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
   return (
     <section className="bg-hero min-h-screen flex items-center pt-16">
       <div className="container mx-auto px-4 text-center">
@@ -16,7 +20,11 @@ const HeroSection = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button className="btn-hero text-lg px-8 py-6 animate-scale-in">
+            <Button 
+              className="btn-hero text-lg px-8 py-6 animate-scale-in"
+              onClick={() => setIsChatOpen(true)}
+            >
+              <MessageCircle className="mr-2 h-5 w-5" />
               Talk to Financial Advisor
               <span className="ml-2 text-sm bg-white/20 px-2 py-1 rounded">First 2 mins FREE</span>
             </Button>
@@ -41,6 +49,13 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
+      
+      <ChatModal
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        advisorName="Expert Financial Advisor"
+        advisorSpecialty="Investment Planning & Tax Optimization"
+      />
     </section>
   );
 };
