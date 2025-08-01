@@ -11,15 +11,13 @@ interface AdvisorSignupFormProps {
 }
 
 const expertiseAreas = [
-  'Tax Planning',
-  'Stock Market',
-  'Budgeting',
-  'Investment Planning',
-  'Retirement Planning',
-  'Insurance',
-  'Mutual Funds',
-  'Real Estate',
-  'Financial Planning'
+  'tax',
+  'stocks', 
+  'budgeting',
+  'insurance',
+  'retirement',
+  'loans',
+  'investment'
 ];
 
 export const AdvisorSignupForm: React.FC<AdvisorSignupFormProps> = ({ onSuccess }) => {
@@ -79,14 +77,16 @@ export const AdvisorSignupForm: React.FC<AdvisorSignupFormProps> = ({ onSuccess 
         email: formData.email,
         password: formData.password,
         options: {
+          emailRedirectTo: `${window.location.origin}/`,
           data: {
             full_name: formData.fullName,
-            mobile: formData.mobile,
-            user_type: 'advisor',
-            pan_card: formData.panCard,
-            aadhaar: formData.aadhaar,
-            experience: formData.experience,
-            expertise: formData.expertise
+            mobile_number: formData.mobile,
+            role: 'advisor',
+            pan_card_number: formData.panCard,
+            aadhaar_number: formData.aadhaar,
+            years_experience: parseInt(formData.experience),
+            expertise_area: formData.expertise,
+            certificate_url: null // Will be updated after file upload
           }
         }
       });
@@ -192,7 +192,7 @@ export const AdvisorSignupForm: React.FC<AdvisorSignupFormProps> = ({ onSuccess 
           <SelectContent>
             {expertiseAreas.map((area) => (
               <SelectItem key={area} value={area}>
-                {area}
+                {area.charAt(0).toUpperCase() + area.slice(1)}
               </SelectItem>
             ))}
           </SelectContent>
