@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Shield, Clock, Star, MessageCircle } from "lucide-react";
 import { ChatModal } from "./ChatModal";
+import { AuthModal } from "./auth/AuthModal";
 import React, { useState } from "react";
 
 const HeroSection = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   return (
     <section className="bg-hero min-h-screen flex items-center pt-16">
@@ -28,8 +30,13 @@ const HeroSection = () => {
               Talk to Financial Advisor
               <span className="ml-2 text-sm bg-white/20 px-2 py-1 rounded">First 2 mins FREE</span>
             </Button>
-            <Button variant="outline" size="lg" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
-              View Our Advisors
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="bg-white/10 border-white/30 text-white hover:bg-white/20"
+              onClick={() => setIsAuthOpen(true)}
+            >
+              Join as Customer/Advisor
             </Button>
           </div>
           
@@ -55,6 +62,15 @@ const HeroSection = () => {
         onClose={() => setIsChatOpen(false)}
         advisorName="Expert Financial Advisor"
         advisorSpecialty="Investment Planning & Tax Optimization"
+        onAuthRequired={() => {
+          setIsChatOpen(false);
+          setIsAuthOpen(true);
+        }}
+      />
+      
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
       />
     </section>
   );
