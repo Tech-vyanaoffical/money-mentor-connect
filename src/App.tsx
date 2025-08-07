@@ -13,19 +13,7 @@ import { useSecurityProtection } from "@/hooks/useSecurityProtection";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const { isBlocked } = useSecurityProtection();
-
-  if (isBlocked) {
-    return (
-      <div className="min-h-screen bg-destructive flex items-center justify-center">
-        <div className="text-center text-destructive-foreground">
-          <h1 className="text-4xl font-bold mb-4">Access Blocked</h1>
-          <p className="text-lg">Unauthorized access attempt detected.</p>
-          <p className="text-sm mt-2">Please refresh the page and try again.</p>
-        </div>
-      </div>
-    );
-  }
+  useSecurityProtection(); // Apply security without blocking
 
   return (
     <QueryClientProvider client={queryClient}>
