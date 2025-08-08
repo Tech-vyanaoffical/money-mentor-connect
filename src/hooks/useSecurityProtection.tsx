@@ -29,15 +29,8 @@ export const useSecurityProtection = () => {
       document.ondragstart = () => false;
     };
 
-    // Override console methods silently
-    const overrideConsole = () => {
-      const noop = () => {};
-      window.console.log = noop;
-      window.console.warn = noop;
-      window.console.error = noop;
-      window.console.info = noop;
-      window.console.debug = noop;
-    };
+    // Note: Do NOT override console methods to avoid hiding real errors
+
 
     // Add event listeners
     document.addEventListener('contextmenu', handleContextMenu);
@@ -45,7 +38,7 @@ export const useSecurityProtection = () => {
     
     // Apply protections
     disableSelection();
-    overrideConsole();
+
 
     // Cleanup
     return () => {
